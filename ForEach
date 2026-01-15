@@ -1,0 +1,8 @@
+$Groups | ForEach-Object {
+    if (Get-ADGroup $_ -ErrorAction SilentlyContinue) {
+        $GroupName = $_
+        Get-ADGroupMember $_ -Recursive |
+        Where-Object objectClass -eq 'user' |
+        Select-Object @{n='GroupName';e={$GroupName}}, Name, SamAccountName
+    }
+}
