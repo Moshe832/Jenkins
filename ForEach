@@ -6,3 +6,16 @@ $Groups | ForEach-Object {
         Select-Object @{n='GroupName';e={$GroupName}}, Name, SamAccountName
     }
 }
+
+
+
+$Groups | ForEach-Object {
+    $GroupName = $_
+
+    Get-ADGroupMember $GroupName -Recursive |
+    Where-Object { $_.objectClass -eq 'user' } |
+    Select-Object `
+        @{Name='GroupName';Expression={$GroupName}},
+        Name,
+        SamAccountName
+} | Export-Csv "Groups_Users.csv" -NoTypeInformation -Encoding UTF8
